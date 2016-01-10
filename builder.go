@@ -45,6 +45,13 @@ func (q *QueryBuilder) filterIndexOf(filterName string) int {
 	return -1
 }
 
+// CreateQuery initializes a new Query and returns it.
+func (q *QueryBuilder) CreateQuery() *Query {
+	return newQuery(q.filters)
+}
+
+// NewBuilder initializes a new QueryBuilder and returns it.
+// The builder can then be used to create query parsers.
 func NewBuilder() *QueryBuilder {
 	queryBuilder := &QueryBuilder{
 		filters: []*Filter{},

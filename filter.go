@@ -7,28 +7,36 @@ type Filter struct {
 }
 
 var (
+	// FilterEq represents the equal filter.
 	FilterEq = &Filter{
 		Identification: "eq",
 	}
+	// FilterLt is a filter for lesser comparison.
 	FilterLt = &Filter{
 		Identification: "lt",
 	}
+	// FilterLte is a filter for lesser equal comparison.
 	FilterLte = &Filter{
 		Identification: "lte",
 	}
+	// FilterGt is a filter for greater comparison.
 	FilterGt = &Filter{
 		Identification: "gt",
 	}
+	// FilterGte is a filter for greater equal comparison.
 	FilterGte = &Filter{
 		Identification: "gte",
 	}
-	FilterIn = &Filter {
+	// FilterIn is a filter for the in comparison.
+	FilterIn = &Filter{
 		Identification: "in",
 	}
-	FilterLike = &Filter {
+	// FilterLike is a filter for the SQL-LIKE clause.
+	FilterLike = &Filter{
 		Identification: "like",
 	}
-	FilterILike = &Filter {
+	// FilterILike is a filter for the SQL-LIKE with ignoring cases.
+	FilterILike = &Filter{
 		Identification: "ilike",
 	}
 )
