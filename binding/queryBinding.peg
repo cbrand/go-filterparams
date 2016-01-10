@@ -1,0 +1,49 @@
+{
+package binding
+
+import (
+  "strings"
+
+  "github.com/cbrand/go-filterparams/definition"
+)
+
+}
+
+Input <- expr:Expr EOF {
+    return expr, nil
+}
+
+Expr <- _ expr:(Or / And / Bracket / NegateTerm / Term) _ {
+  return expr, nil
+}
+
+Bracket <- _ '(' _ expr:Expr _ ')' _ {
+  return expr, nil
+}
+
+Or <- left:(And / Bracket / NegateTerm / Term) _ '|' _ right:Expr {
+  or := definition.NewOr()
+  or.Left = left
+  or.Right = right
+  return or, nil
+}
+
+And <- left:(NegateTerm / Term / Bracket) _ '&' _ right:(And / Bracket / NegateTerm / Term) {
+  and := definition.NewAnd()
+  and.Left = left
+  and.Right = right
+  return and, nil
+}
+
+NegateTerm <- _ '!' _ first:Term _ {
+  return definition.NewNegate(first.(*definition.Parameter)), nil
+}
+
+Term <- _ [a-zA-Z0-9]+ _ {
+  name := strings.TrimSpace(string(c.text))
+  return definition.NewParameter(name), nil
+}
+
+_ "whitespace" <- [ \n\t\r]*
+
+EOF <- !.

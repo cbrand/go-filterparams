@@ -1,4 +1,4 @@
-package filterparams
+package definition
 
 // Filter is one allowed filter for the given entry.
 type Filter struct {

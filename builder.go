@@ -1,22 +1,26 @@
 package filterparams
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/cbrand/go-filterparams/definition"
+)
 
 
 // QueryBuilder allows the configuration of a query which can represent
 // query parameters.
 type QueryBuilder struct {
-	filters []*Filter
+	filters []*definition.Filter
 }
 
 // EnableFilter allows a filter to be registered against the query builder.
-func (q *QueryBuilder) EnableFilter(filter *Filter) {
+func (q *QueryBuilder) EnableFilter(filter *definition.Filter) {
 	q.filters = append(q.filters, filter)
 }
 
 // RemoveFilters removes all filters.
 func (q *QueryBuilder) RemoveFilters() {
-	q.filters = []*Filter{}
+	q.filters = []*definition.Filter{}
 }
 
 // HasFilter returns if the filter with the given Identification is
@@ -27,7 +31,7 @@ func (q *QueryBuilder) HasFilter(filterName string) bool {
 
 // GetFilter returns the filter with the given name if it exists. Returns an error if none
 // is present.
-func (q *QueryBuilder) GetFilter(filterName string) (*Filter, error) {
+func (q *QueryBuilder) GetFilter(filterName string) (*definition.Filter, error) {
 	index := q.filterIndexOf(filterName)
 	if index == -1 {
 		return nil, fmt.Errorf("Filter %s does not exist.", filterName)
@@ -54,7 +58,7 @@ func (q *QueryBuilder) CreateQuery() *Query {
 // The builder can then be used to create query parsers.
 func NewBuilder() *QueryBuilder {
 	queryBuilder := &QueryBuilder{
-		filters: []*Filter{},
+		filters: []*definition.Filter{},
 	}
 	return queryBuilder
 }
