@@ -1,31 +1,57 @@
 package filterparams
 
 import (
-	"net/url"
+	"fmt"
+	"strings"
+	"regexp"
+
+	"github.com/cbrand/go-filterparams/binding"
+	"github.com/cbrand/go-filterparams/definition"
 )
+
+// orderMatcher is used to verify
+var orderMatcher = regexp.MustCompile("(?:(asc|desc)\\(([a-zA-Z0-9]*)\\)|([a-zA-Z0-9]*))")
+
+// ParamNotFoundError represents a parameter which is specified
+// in the query.
+type ParamNotFoundError struct {
+	ParamName string
+}
+
+// Error returns the string representation of the given error.
+func (f *ParamNotFoundError) Error() string {
+	return fmt.Sprintf("Parameter \"%s\" missing", f.ParamName)
+}
+
+// NewFilterParamNotFoundError creates a new error with the given parameter name.
+func NewFilterParamNotFoundError(paramName string) *ParamNotFoundError {
+	return &ParamNotFoundError{
+		ParamName: paramName,
+	}
+}
 
 // ValueFilterArguments is an internal used struct to adjust the filter arguments
 // entry.
 type ValueFilterArguments struct {
-	arguments    *url.Values
+	arguments    map[string]*definition.Parameter
 	queryBinding string
 	orders       []string
 }
 
 // GetArgument returns the value of the arugment with the given name. Returns an empty
 // string if the argument is not present
-func (v *ValueFilterArguments) GetArgument(key string) string {
-	return v.arguments.Get(key)
+func (v *ValueFilterArguments) GetArgument(key string) *definition.Parameter {
+	return v.arguments[key]
 }
 
 // SetArgument sets the argument with the passed data.
-func (v *ValueFilterArguments) SetArgument(key, value string) {
-	v.arguments.Set(key, value)
+func (v *ValueFilterArguments) SetArgument(key string, value *definition.Parameter) {
+	v.arguments[key] = value
 }
 
 // DelArgument removes the argument with the given entry.
 func (v *ValueFilterArguments) DelArgument(key string) {
-	v.arguments.Del(key)
+	delete(v.arguments, key)
 }
 
 // SetQueryBinding sets the string representation of the binding
@@ -55,9 +81,62 @@ func (v *ValueFilterArguments) GetOrders() []string {
 	return v.orders
 }
 
+// ParsedBinding parses the order string and returns the parsed result.
+func (v *ValueFilterArguments) ParsedBinding() (interface{}, error) {
+	data, err := binding.ParseString(v.queryBinding)
+	if err != nil {
+		return nil, err
+	}
+	parameters := data.(definition.ParameterHaver).GetParameters()
+	for _, parameter := range parameters {
+		argument := v.GetArgument(parameter.Identification)
+		if argument == nil {
+			return nil, NewFilterParamNotFoundError(parameter.Identification)
+		}
+
+		parameter.Name = argument.Name
+		parameter.Value = argument.Value
+		parameter.Filter = argument.Filter
+	}
+
+	return data, nil
+}
+
+// ApplyOrders takes the configured orders and returns the configured
+// order objects.
+func (v *ValueFilterArguments) ApplyOrders() []*definition.Order {
+	orders := []*definition.Order{}
+	for _, orderString := range v.GetOrders() {
+		matches := orderMatcher.FindStringSubmatch(orderString)
+		ascDesc := "asc"
+		name := matches[4]
+		if len(matches[4]) == 0 {
+			ascDesc = matches[1]
+			name = matches[2]
+		}
+		orders = append(orders, definition.NewOrder(name, ascDesc))
+	}
+	return orders
+}
+
+// ConstructDefaultQueryBinding creates a query binding where all parameters
+// are connected with an AND-Statement.
+func (v *ValueFilterArguments) ConstructDefaultQueryBinding() string {
+	args := v.arguments
+	data := make([]string, len(args))
+	index := 0
+	for key, _ := range args {
+		data[index] = key
+		index++
+	}
+	return strings.Join(data, "&")
+}
+
+// NewValueFilterArgument initializes the ValueFilterArguments struct
+// which is then used to store the parsed data.
 func NewValueFilterArgument() *ValueFilterArguments {
 	return &ValueFilterArguments{
-		arguments: new(url.Values),
+		arguments: map[string]*definition.Parameter{},
 		orders: []string{},
 	}
 }

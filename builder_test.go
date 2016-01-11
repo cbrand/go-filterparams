@@ -39,3 +39,11 @@ func (t *BuilderTest) TestGetFilterNegative(c *C) {
 	c.Assert(err, NotNil)
 	c.Assert(filter, IsNil)
 }
+
+func (t *BuilderTest) TestDefaultOrder(c *C) {
+	c.Assert(
+		t.builder.SetDefaultOperation("lte").CreateQuery().GetDefaultOperation(),
+		Equals,
+		"lte",
+	)
+}
