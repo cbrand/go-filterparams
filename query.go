@@ -91,11 +91,11 @@ func (q *Query) getFilter(name string) *definition.Filter {
 // GetDefaultOperation returns the default operation as the
 // entry.
 func (q *Query) GetDefaultOperation() string {
-	if len(q.defaultOperation) == 0 {
-		return defaultOperation
-	} else {
-		return q.defaultOperation
+	operation := defaultOperation
+	if len(q.defaultOperation) > 0 {
+		operation = q.defaultOperation
 	}
+	return operation
 }
 
 // setDefaultOperation is used by the builder to be able to

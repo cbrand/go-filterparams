@@ -125,7 +125,7 @@ func (v *ValueFilterArguments) ConstructDefaultQueryBinding() string {
 	args := v.arguments
 	data := make([]string, len(args))
 	index := 0
-	for key, _ := range args {
+	for key := range args {
 		data[index] = key
 		index++
 	}

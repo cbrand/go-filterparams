@@ -2,6 +2,8 @@ package definition
 
 import "strings"
 
+// Order is the representation on how one order item should be
+// applied to a collection resource.
 type Order struct {
 	orderBy string
 	orderDesc bool
@@ -43,9 +45,11 @@ func NewOrderDesc(orderBy string) *Order {
 // sortOrder is set to "desc" than it is marked to be sorted in descending order.
 // In any other instance it is sorted in ascending order.
 func NewOrder(orderBy string, sortOrder string) *Order {
+	var data *Order
 	if strings.ToLower(sortOrder) == "desc" {
-		return NewOrderDesc(orderBy)
+		data = NewOrderDesc(orderBy)
 	} else {
-		return NewOrderAsc(orderBy)
+		data = NewOrderAsc(orderBy)
 	}
+	return data
 }
