@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"os"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -296,7 +293,7 @@ var g = &grammar{
 							label: "first",
 							expr: &ruleRefExpr{
 								pos:  position{line: 38, col: 29, offset: 649},
-								name: "Term",
+								name: "Expr",
 							},
 						},
 						&ruleRefExpr{
@@ -309,21 +306,21 @@ var g = &grammar{
 		},
 		{
 			name: "Term",
-			pos:  position{line: 42, col: 1, offset: 727},
+			pos:  position{line: 42, col: 1, offset: 703},
 			expr: &actionExpr{
-				pos: position{line: 42, col: 9, offset: 735},
+				pos: position{line: 42, col: 9, offset: 711},
 				run: (*parser).callonTerm1,
 				expr: &seqExpr{
-					pos: position{line: 42, col: 9, offset: 735},
+					pos: position{line: 42, col: 9, offset: 711},
 					exprs: []interface{}{
 						&ruleRefExpr{
-							pos:  position{line: 42, col: 9, offset: 735},
+							pos:  position{line: 42, col: 9, offset: 711},
 							name: "_",
 						},
 						&oneOrMoreExpr{
-							pos: position{line: 42, col: 11, offset: 737},
+							pos: position{line: 42, col: 11, offset: 713},
 							expr: &charClassMatcher{
-								pos:        position{line: 42, col: 11, offset: 737},
+								pos:        position{line: 42, col: 11, offset: 713},
 								val:        "[a-zA-Z0-9]",
 								ranges:     []rune{'a', 'z', 'A', 'Z', '0', '9'},
 								ignoreCase: false,
@@ -331,7 +328,7 @@ var g = &grammar{
 							},
 						},
 						&ruleRefExpr{
-							pos:  position{line: 42, col: 24, offset: 750},
+							pos:  position{line: 42, col: 24, offset: 726},
 							name: "_",
 						},
 					},
@@ -341,11 +338,11 @@ var g = &grammar{
 		{
 			name:        "_",
 			displayName: "\"whitespace\"",
-			pos:         position{line: 47, col: 1, offset: 845},
+			pos:         position{line: 47, col: 1, offset: 821},
 			expr: &zeroOrMoreExpr{
-				pos: position{line: 47, col: 19, offset: 863},
+				pos: position{line: 47, col: 19, offset: 839},
 				expr: &charClassMatcher{
-					pos:        position{line: 47, col: 19, offset: 863},
+					pos:        position{line: 47, col: 19, offset: 839},
 					val:        "[ \\n\\t\\r]",
 					chars:      []rune{' ', '\n', '\t', '\r'},
 					ignoreCase: false,
@@ -355,11 +352,11 @@ var g = &grammar{
 		},
 		{
 			name: "EOF",
-			pos:  position{line: 49, col: 1, offset: 875},
+			pos:  position{line: 49, col: 1, offset: 851},
 			expr: &notExpr{
-				pos: position{line: 49, col: 8, offset: 882},
+				pos: position{line: 49, col: 8, offset: 858},
 				expr: &anyMatcher{
-					line: 49, col: 9, offset: 883,
+					line: 49, col: 9, offset: 859,
 				},
 			},
 		},
@@ -423,7 +420,7 @@ func (p *parser) callonAnd1() (interface{}, error) {
 }
 
 func (c *current) onNegateTerm1(first interface{}) (interface{}, error) {
-	return definition.NewNegate(first.(*definition.Parameter)), nil
+	return definition.NewNegate(first), nil
 }
 
 func (p *parser) callonNegateTerm1() (interface{}, error) {
@@ -497,27 +494,6 @@ func Recover(b bool) Option {
 		p.recover = b
 		return Recover(old)
 	}
-}
-
-// ParseFile parses the file identified by filename.
-func ParseFile(filename string, opts ...Option) (interface{}, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	return ParseReader(filename, f, opts...)
-}
-
-// ParseReader parses the data from r using filename as information in the
-// error messages.
-func ParseReader(filename string, r io.Reader, opts ...Option) (interface{}, error) {
-	b, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
-	}
-
-	return Parse(filename, b, opts...)
 }
 
 // Parse parses the data from b using filename as information in the
@@ -1290,19 +1266,4 @@ func (p *parser) parseZeroOrOneExpr(expr *zeroOrOneExpr) (interface{}, bool) {
 	p.popV()
 	// whether it matched or not, consider it a match
 	return val, true
-}
-
-func rangeTable(class string) *unicode.RangeTable {
-	if rt, ok := unicode.Categories[class]; ok {
-		return rt
-	}
-	if rt, ok := unicode.Properties[class]; ok {
-		return rt
-	}
-	if rt, ok := unicode.Scripts[class]; ok {
-		return rt
-	}
-
-	// cannot happen
-	panic(fmt.Sprintf("invalid Unicode class: %s", class))
 }

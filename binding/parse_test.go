@@ -32,7 +32,7 @@ func (t *ParseTest) TestParseNegativeTerm(c *C) {
 	data := t.parse(c , "! as")
 	param, ok := data.(*definition.Negate)
 	c.Assert(ok, Equals, true)
-	c.Assert(param.Statement.Identification, Equals, "as")
+	c.Assert(param.Negated.(*definition.Parameter).Identification, Equals, "as")
 }
 
 func (t *ParseTest) TestParseBracket(c *C) {
@@ -85,7 +85,7 @@ func (t *ParseTest) TestParseAndOr(c *C) {
 	c.Assert(ok, Equals, true)
 	rightNot, ok := outerOr.Right.(*definition.Negate)
 	c.Assert(ok, Equals, true)
-	c.Assert(rightNot.Statement.Identification, Equals, "right")
+	c.Assert(rightNot.Negated.(*definition.Parameter).Identification, Equals, "right")
 
 	leftAnd, ok := outerOr.Left.(*definition.And)
 	c.Assert(ok, Equals, true)
@@ -124,5 +124,13 @@ func (t *ParseTest) TestParseOneBracket(c *C) {
 	_, ok = leftAnd.Right.(*definition.Parameter)
 	c.Assert(ok, Equals, true)
 	_, ok = leftAnd.Left.(*definition.Or)
+	c.Assert(ok, Equals, true)
+}
+
+func (t *ParseTest) TestParseNegation(c *C) {
+	data := t.parse(c, "!(item1 & item2)")
+	outerNegation, ok := data.(*definition.Negate)
+	c.Assert(ok, Equals, true)
+	_, ok = outerNegation.Negated.(*definition.And)
 	c.Assert(ok, Equals, true)
 }
