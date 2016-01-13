@@ -178,10 +178,14 @@ func (t *QueryTest) TestQueryEmptyOrder(c *C) {
 	c.Assert(len(queryData.GetOrders()), Equals, 0)
 }
 
+func (t *QueryTest) addOrder(order string) {
+	t.data.Add("filter[order]", order)
+}
+
 func (t *QueryTest) TestQueryWithOrder(c *C) {
 	t.addNameParam()
-	t.data.Add("filter[order]", "name")
-	t.data.Add("filter[order]", "desc(date)")
+	t.addOrder("name")
+	t.addOrder("desc(date)")
 	queryData := t.run(c)
 	orders := queryData.GetOrders()
 	c.Assert(len(orders), Equals, 2)
@@ -195,5 +199,14 @@ func (t *QueryTest) TestQueryWithOrder(c *C) {
 
 	c.Assert(orderNames, DeepEquals, []string{"name", "date"})
 	c.Assert(orderDesc, DeepEquals, []bool{false, true})
+}
 
+func (t *QueryTest) TestIgnoreOtherParams(c *C) {
+	t.addNameParam()
+	t.data.Set("filter[unrecognized]", "hallo")
+	t.data.Set("nonFilter", "test")
+	t.data.Set("other[category][differ]", "egh")
+	queryData := t.run(c)
+	_, ok := queryData.(*definition.Parameter)
+	c.Assert(ok, Equals, true)
 }
