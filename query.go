@@ -59,13 +59,13 @@ func (q *Query) parseFilterParam(paramName, remainingKeyData, value string) (*de
 	operation := defaultOperation
 	possibleRemainingAlias := ""
 	if remainingDataMatches != nil {
-		operation = remainingDataMatches[0]
-		possibleRemainingAlias = remainingDataMatches[1]
+		operation = remainingDataMatches[1]
+		possibleRemainingAlias = remainingDataMatches[2]
 	}
 	remainingAliasMatches := fieldFilter.FindStringSubmatch(possibleRemainingAlias)
 	alias := paramName
 	if remainingAliasMatches != nil {
-		alias = remainingAliasMatches[0]
+		alias = remainingAliasMatches[1]
 	}
 	parameter := definition.NewParameter(alias)
 	parameter.Name = paramName

@@ -108,9 +108,12 @@ func (v *ValueFilterArguments) ApplyOrders() []*definition.Order {
 	orders := []*definition.Order{}
 	for _, orderString := range v.GetOrders() {
 		matches := orderMatcher.FindStringSubmatch(orderString)
+		if len(matches) == 0 {
+			continue
+		}
 		ascDesc := "asc"
-		name := matches[4]
-		if len(matches[4]) == 0 {
+		name := matches[3]
+		if len(matches[3]) == 0 {
 			ascDesc = matches[1]
 			name = matches[2]
 		}
