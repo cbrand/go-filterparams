@@ -207,6 +207,6 @@ func (t *QueryTest) TestIgnoreOtherParams(c *C) {
 	t.data.Set("nonFilter", "test")
 	t.data.Set("other[category][differ]", "egh")
 	queryData := t.run(c)
-	_, ok := queryData.(*definition.Parameter)
+	_, ok := queryData.GetFilter().(*definition.Parameter)
 	c.Assert(ok, Equals, true)
 }
