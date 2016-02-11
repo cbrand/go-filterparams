@@ -11,7 +11,7 @@ compatible with the standard and encapsulates everything in the `filter` query p
 
 Given the URL (non URL escaped for better readability):
 ```
-/users?filter[param][name][like][no_default_name]=doe&filter[param][first_name]=doe%&filter[param][binding]=(!no_brand_name&first_name)&filter[order]=name&filter[order]=desc(first_name)
+/users?filter[param][name][like][no_default_name]=doe&filter[param][first_name]=doe%&filter[binding]=(!no_brand_name&first_name)&filter[order]=name&filter[order]=desc(first_name)
 ```
 
 It can be parsed by the given function:
@@ -168,7 +168,7 @@ The package provides a `QueryBuilder` object, which allows the definition of the
 
 ```golang
 filterEq := Filter{Identification: "eq"}
-queryBuilder := NewBuilder(filterEq)
+queryBuilder := filterparams.NewBuilder()
 queryBuilder.EnableFilter(filterEq).SetDefaultOperation("eq")
 query := queryBuilder.CreateQuery()
 ```
