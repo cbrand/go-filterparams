@@ -183,7 +183,6 @@ an error will be returned.
 backend. I plan long-term to add another library which does use this package and provide a way to map it on gorm models. 
 If you are planning to do this or use it for other data mapping please contact me and I'll add a reference to it 
 the README.
-- The same as mentioned above is valid for client libraries, which generate the filter query structure in any language. 
 Again, as soon as the API is stable I'll probably add a JavaScript library.
 - This package has been implemented due to no public available project which parses filter arguments
 - Depending on your backend it might not make sense to support all features (ordering, parameter binding) of the
@@ -194,9 +193,11 @@ language. You might still want to use it to parse your basic parameters though a
 For evaluating the query binding the [pigeon](https://github.com/PuerkitoBio/pigeon) parser generator is used 
 (Licensed under [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause)).
 
+## Filterparam libraries ##
+- [filterparams - Python](https://github.com/cbrand/python-filterparams) - Implementation of the language parser in python.
+- [filterparams-client - JavaScript](https://github.com/cbrand/js-filterparams-client) Implementation of a object oriented client request configuration approach in JavaScript.
+
 ## License ##
 
 Licensed under the [MIT license](https://opensource.org/licenses/MIT). 
 
-### Contributors ###
-- [Christoph Brand](mailto:christoph@brand.rest) ([@cbrand](https://github.com/cbrand), creator)
