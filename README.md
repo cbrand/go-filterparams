@@ -183,8 +183,7 @@ an error will be returned.
 backend. I plan long-term to add another library which does use this package and provide a way to map it on gorm models. 
 If you are planning to do this or use it for other data mapping please contact me and I'll add a reference to it 
 the README.
-Again, as soon as the API is stable I'll probably add a JavaScript library.
-- This package has been implemented due to no public available project which parses filter arguments
+- This package has been implemented due to no publicly available project which parses filter arguments that I know of at the moment.
 - Depending on your backend it might not make sense to support all features (ordering, parameter binding) of the
 language. You might still want to use it to parse your basic parameters though and ignore the rest.
 
