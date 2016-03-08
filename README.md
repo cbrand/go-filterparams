@@ -194,6 +194,7 @@ For evaluating the query binding the [pigeon](https://github.com/PuerkitoBio/pig
 
 ## Filterparam libraries ##
 - [filterparams - Python](https://github.com/cbrand/python-filterparams) - Implementation of the language parser in python.
+- [filterparams - Ruby](https://github.com/cbrand/ruby-filterparams) - Implementation of the language parser in ruby.
 - [filterparams-client - JavaScript](https://github.com/cbrand/js-filterparams-client) - Implementation of an object oriented client request configuration approach in JavaScript.
 
 ## License ##
