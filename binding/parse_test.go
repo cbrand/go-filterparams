@@ -8,7 +8,7 @@ import (
 
 var _ = Suite(&ParseTest{})
 
-type ParseTest struct {}
+type ParseTest struct{}
 
 func (t *ParseTest) expectParsingError(c *C, data string) {
 	_, err := ParseString(data)
@@ -29,7 +29,7 @@ func (t *ParseTest) TestParseTerm(c *C) {
 }
 
 func (t *ParseTest) TestParseNegativeTerm(c *C) {
-	data := t.parse(c , "! as")
+	data := t.parse(c, "! as")
 	param, ok := data.(*definition.Negate)
 	c.Assert(ok, Equals, true)
 	c.Assert(param.Negated.(*definition.Parameter).Identification, Equals, "as")
@@ -104,7 +104,7 @@ func (t *ParseTest) TestParseAndOr(c *C) {
 }
 
 func (t *ParseTest) TestParseBrackets(c *C) {
-	data := t.parse(c , "(left1 | left2) & (right1 | right2)")
+	data := t.parse(c, "(left1 | left2) & (right1 | right2)")
 	outerAnd, ok := data.(*definition.And)
 	c.Assert(ok, Equals, true)
 	_, ok = outerAnd.Left.(*definition.Or)
@@ -114,7 +114,7 @@ func (t *ParseTest) TestParseBrackets(c *C) {
 }
 
 func (t *ParseTest) TestParseOneBracket(c *C) {
-	data := t.parse(c , "(left1 | left2) & right1 | right2")
+	data := t.parse(c, "(left1 | left2) & right1 | right2")
 	outerAnd, ok := data.(*definition.Or)
 	c.Assert(ok, Equals, true)
 	_, ok = outerAnd.Right.(*definition.Parameter)
@@ -128,9 +128,27 @@ func (t *ParseTest) TestParseOneBracket(c *C) {
 }
 
 func (t *ParseTest) TestParseNegation(c *C) {
+	data := t.parse(c, "!item1 & (item2 | item3)")
+	outerAnd, ok := data.(*definition.And)
+	c.Assert(ok, Equals, true)
+	_, ok = outerAnd.Left.(*definition.Negate)
+	c.Assert(ok, Equals, true)
+	_, ok = outerAnd.Right.(*definition.Or)
+	c.Assert(ok, Equals, true)
+}
+
+func (t *ParseTest) TestParseNegationAnd(c *C) {
 	data := t.parse(c, "!(item1 & item2)")
 	outerNegation, ok := data.(*definition.Negate)
 	c.Assert(ok, Equals, true)
 	_, ok = outerNegation.Negated.(*definition.And)
+	c.Assert(ok, Equals, true)
+}
+
+func (t *ParseTest) TestParseNegationOr(c *C) {
+	data := t.parse(c, "!(item1 | item2)")
+	outerNegation, ok := data.(*definition.Negate)
+	c.Assert(ok, Equals, true)
+	_, ok = outerNegation.Negated.(*definition.Or)
 	c.Assert(ok, Equals, true)
 }
