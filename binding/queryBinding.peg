@@ -35,7 +35,7 @@ And <- left:(NegateTerm / Term / Bracket) _ '&' _ right:(And / Bracket / NegateT
   return and, nil
 }
 
-NegateTerm <- _ '!' _ first:Expr _ {
+NegateTerm <- _ '!' _ first:(Term / Expr) _ {
   return definition.NewNegate(first), nil
 }
 
