@@ -152,3 +152,21 @@ func (t *ParseTest) TestParseNegationOr(c *C) {
 	_, ok = outerNegation.Negated.(*definition.Or)
 	c.Assert(ok, Equals, true)
 }
+
+func (t *ParseTest) TestParseNegationBracketAnd(c *C) {
+	data := t.parse(c, "!(item1 & item2) & item3")
+	outerAnd, ok := data.(*definition.And)
+	c.Assert(ok, Equals, true)
+
+	leftNegation, ok := outerAnd.Left.(*definition.Negate)
+	c.Assert(ok, Equals, true)
+
+	leftNegationInnerAnd, ok := leftNegation.Negated.(*definition.And)
+	c.Assert(ok, Equals, true)
+	c.Assert(leftNegationInnerAnd.Left.(*definition.Parameter).Identification, Equals, "item1")
+	c.Assert(leftNegationInnerAnd.Right.(*definition.Parameter).Identification, Equals, "item2")
+
+	rightDefinition, ok := outerAnd.Right.(*definition.Parameter)
+	c.Assert(ok, Equals, true)
+	c.Assert(rightDefinition.Identification, Equals, "item3")
+}
