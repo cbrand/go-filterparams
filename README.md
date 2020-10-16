@@ -21,7 +21,7 @@ import (
   "net/url"
 
   "github.com/cbrand/go-filterparams"
-  "github.com/cbrand/go-filterparams/filter"
+  filter "github.com/cbrand/go-filterparams/definition"
 )
 
 def GetFilterArguments(toParseURL *url.URL) (*filterparams.QueryData, error) {
