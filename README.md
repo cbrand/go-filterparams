@@ -24,7 +24,7 @@ import (
   filter "github.com/cbrand/go-filterparams/definition"
 )
 
-def GetFilterArguments(toParseURL *url.URL) (*filterparams.QueryData, error) {
+func GetFilterArguments(toParseURL *url.URL) (*filterparams.QueryData, error) {
   builder := filterparams.NewBuilder()
   builder.EnableFilter(filter.FilterEq)
   builder.EnableFilter(filter.FilterLike)
