@@ -39,7 +39,7 @@ NegateTerm <- _ '!' _ first:(Bracket / Term / Expr) _ {
   return definition.NewNegate(first), nil
 }
 
-Term <- _ [a-zA-Z0-9]+ _ {
+Term <- _ [a-zA-Z0-9_\\-]+ _ {
   name := strings.TrimSpace(string(c.text))
   return definition.NewParameter(name), nil
 }

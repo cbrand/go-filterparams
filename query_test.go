@@ -23,6 +23,31 @@ func (t *QueryTest) SetUpTest(c *C) {
 	t.data = &url.Values{}
 }
 
+func (t *QueryTest) TestGetFilterArguments(c *C) {
+	urlTemplate := "http://myurl.com?filter[param][reference][eq][introducer_name]=%s&filter[param][references][eq][agreement_number]=%s&filter[binding]=%s"
+	urlString := fmt.Sprintf(urlTemplate, url.QueryEscape("Broker 1"), url.QueryEscape("123456789"), url.QueryEscape("(introducer_name&agreement_number)"))
+	query := t.builder.CreateQuery()
+
+	toParseURL, err := url.Parse(urlString)
+	c.Assert(err, IsNil)
+	values := toParseURL.Query()
+	queryData, err := query.Parse(&values)
+	c.Assert(err, IsNil)
+	filter := queryData.GetFilter()
+	and, ok := filter.(*definition.And)
+	c.Assert(ok, Equals, true)
+	parameter, ok := and.Left.(*definition.Parameter)
+	c.Assert(ok, Equals, true)
+
+	c.Assert(parameter.Identification, Equals, "introducer_name")
+	c.Assert(parameter.Value, Equals, "Broker 1")
+
+	parameter, ok = and.Right.(*definition.Parameter)
+	c.Assert(ok, Equals, true)
+	c.Assert(parameter.Identification, Equals, "agreement_number")
+	c.Assert(parameter.Value, Equals, "123456789")
+}
+
 func (t *QueryTest) run(c *C) *QueryData {
 	queryData, err := t.builder.CreateQuery().Parse(t.data)
 	c.Assert(err, IsNil)

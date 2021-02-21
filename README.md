@@ -189,7 +189,7 @@ language. You might still want to use it to parse your basic parameters though a
 
 ## Used Libraries ##
 
-For evaluating the query binding the [pigeon](https://github.com/PuerkitoBio/pigeon) parser generator is used 
+For evaluating the query binding the [pigeon](https://github.com/mna/pigeon) parser generator is used 
 (Licensed under [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause)).
 
 ## Filterparam libraries ##

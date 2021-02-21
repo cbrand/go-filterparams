@@ -10,8 +10,8 @@ import (
 
 const defaultOperation = "eq"
 
-var paramFilter = regexp.MustCompile("([a-zA-Z1-9]+)\\[([a-zA-Z1-9]+)\\](.*)")
-var fieldFilter = regexp.MustCompile("\\[([a-zA-Z1-9]+)\\](.*)")
+var paramFilter = regexp.MustCompile("([a-zA-Z1-9_\\-]+)\\[([a-zA-Z1-9_\\-]+)\\](.*)")
+var fieldFilter = regexp.MustCompile("\\[([a-zA-Z1-9_\\-]+)\\](.*)")
 
 // Query can be used to parse query values.
 type Query struct {
