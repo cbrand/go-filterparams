@@ -2,15 +2,15 @@ package filterparams
 
 import (
 	"fmt"
-	"strings"
 	"regexp"
+	"strings"
 
 	"github.com/cbrand/go-filterparams/binding"
 	"github.com/cbrand/go-filterparams/definition"
 )
 
 // orderMatcher is used to verify
-var orderMatcher = regexp.MustCompile("(?:(asc|desc)\\(([a-zA-Z0-9]*)\\)|([a-zA-Z0-9]*))")
+var orderMatcher = regexp.MustCompile("(?:(asc|desc)\\(([a-zA-Z0-9_\\-]*)\\)|([a-zA-Z0-9_\\-]*))")
 
 // ParamNotFoundError represents a parameter which is specified
 // in the query.
