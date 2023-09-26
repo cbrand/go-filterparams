@@ -116,9 +116,12 @@ func (q *Query) Parse(values *url.Values) (*QueryData, error) {
 	if !arguments.HasQueryBinding() {
 		arguments.SetQueryBinding(arguments.ConstructDefaultQueryBinding())
 	}
-	binding, err := arguments.ParsedBinding()
-	if err != nil {
-		return nil, err
+	var binding interface{}
+	if len(arguments.arguments) > 0 {
+		binding, err = arguments.ParsedBinding()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	orders := arguments.ApplyOrders()
